@@ -8,7 +8,7 @@ const MIME_TYPES = {
 
 const fileFilter = (req, file, callback) =>{
   if (!(file.mimetype in MIME_TYPES)) {
-   callback(new Error('Le format de l\'image n\'est pas autorisé !'))
+   return callback(new Error('Le format de l\'image n\'est pas autorisé !'))
   }
   callback(null, true)
 }
@@ -21,8 +21,7 @@ const storage = multer.diskStorage({
 
   filename: (req, file, callback) => {
     const name = file.originalname.split(' ').join('_');
-    const extension = MIME_TYPES[file.mimetype];
-      callback(null,  Date.now() + '_' + file.originalname);
+      callback(null,  Date.now() + '_' + name);
   },
 });
 

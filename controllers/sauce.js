@@ -56,14 +56,15 @@ exports.deleteSauce = (req, res, next) => {
     .then(sauce => {
       if (sauce.userId != req.auth.userId) {
         res.status(401).json({ error });
-      } else {
-        const filename = sauce.imageUrl.split('/images/')[1];
-        fs.unlink(`images/${filename}`, () => {
-          Sauce.deleteOne({_id: req.params.id})
-            .then(() => { res.status(200).json({message: 'Sauce supprimée !'})})
-            .catch(error => res.status(401).json({ error }));
-        });
+        return;
       }
+
+      const filename = sauce.imageUrl.split('/images/')[1];
+      fs.unlink(`images/${filename}`, () => {
+        Sauce.deleteOne({_id: req.params.id})
+          .then(() => { res.status(200).json({message: 'Sauce supprimée !'})})
+          .catch(error => res.status(401).json({ error }));
+      });
     })
     .catch( error => {
       res.status(500).json({ error });
