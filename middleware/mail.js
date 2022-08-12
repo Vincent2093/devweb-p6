@@ -1,3 +1,4 @@
+// Middleware validant le format de l'email à la création d'un utilisateur avec validator
 const validator = require('validator');
 
 module.exports = (req, res, next) => {

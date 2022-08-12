@@ -1,10 +1,11 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
+const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
 
+// Fonction pour la création d'un nouvel utilisateur
 exports.signUp = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
@@ -19,6 +20,7 @@ exports.signUp = (req, res, next) => {
         .catch(error => res.status(500).json({ error }));
 };
 
+// Fonction pour l'authentification d'un utilisateur
 exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
         .then(user => {

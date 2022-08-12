@@ -1,3 +1,4 @@
+// Middleware vérifiant les exigences de complexité du mot de passe à la création d'un utilisateur
 const passwordSchema = require('../models/password');
 
 module.exports = (req, res, next) => {

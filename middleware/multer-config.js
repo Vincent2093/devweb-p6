@@ -1,3 +1,4 @@
+// Middleware en charge de la gestion les fichiers entrants avec multer
 const multer = require('multer');
 
 const MIME_TYPES = {
@@ -11,22 +12,21 @@ const fileFilter = (req, file, callback) =>{
    return callback(new Error('Le format de l\'image n\'est pas autorisé !'))
   }
   callback(null, true)
-}
+};
 
 const storage = multer.diskStorage({
-
   destination: (req, file, callback) => {
     callback(null, 'images');
   },
 
   filename: (req, file, callback) => {
     const name = file.originalname.split(' ').join('_');
-      callback(null,  Date.now() + '_' + name);
-  },
+      callback(null, Date.now() + '_' + name);
+  }
 });
 
 module.exports = multer({
   fileFilter,
   storage,
-  limits: { fileSize: 1000000 },
+  limits: { fileSize: 10000000 }
 }).single('image');

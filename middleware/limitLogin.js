@@ -1,3 +1,4 @@
+// Middleware limitant le nombre de tentative de connexion à l'authentification avec express-rate-limit
 const rateLimit = require('express-rate-limit');
 
 const limiter = rateLimit({

@@ -1,3 +1,4 @@
+// Fichier contenant les informations de notre serveur Node
 const http = require('http');
 const app = require('./app');
 
@@ -12,6 +13,7 @@ const normalizePort = val => {
   }
   return false;
 };
+
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 

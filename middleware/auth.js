@@ -1,3 +1,4 @@
+// Middleware en charge de la gestion du token d'authentification avec jsonwebtoken
 const dotenv = require('dotenv');
 dotenv.config();
 

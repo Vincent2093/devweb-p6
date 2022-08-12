@@ -1,18 +1,21 @@
 const Sauce = require('../models/sauce');
 const fs = require('fs');
 
+// Fonction pour la récupération de toutes les sauces
 exports.getAllSauces = (req, res, next) => {
   Sauce.find()
     .then((sauces) => res.status(200).json(sauces))
     .catch((error) => res.status(400).json({ error }));
 };
 
+// Fonction pour la récupération d'une sauce
 exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => res.status(200).json(sauce))
     .catch((error) => res.status(404).json({ error }));
 };
 
+// Fonction pour la création d'une sauce
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce)
   delete sauceObject._id;
@@ -30,17 +33,30 @@ exports.createSauce = (req, res, next) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
+// Fonction pour la modification d'une sauce
 exports.modifySauce = (req, res, next) => {
   const sauceObject = req.file ? {
     ...JSON.parse(req.body.sauce),
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`} : { ...req.body };
+  
   delete sauceObject._userId;
+
   Sauce.findOne({_id: req.params.id})
     .then((sauce) => {
       if (sauce.userId != req.auth.userId) {
-        res.status(401).json({ message : 'Non autorisé !'});
+        res.status(403).json({ message : 'Non autorisé !' });
         return;
       }
+      if (sauceObject.imageUrl != undefined) {
+        const filename = sauce.imageUrl.split('/images/')[1];
+        fs.unlink(`images/${filename}`, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('Ancienne image supprimée !');
+          }                   
+        });
+      };
       
       Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
         .then(() => res.status(200).json({message : 'Sauce modifiée !'}))
@@ -51,11 +67,12 @@ exports.modifySauce = (req, res, next) => {
     });
 };
 
+// Fonction pour la suppression d'une sauce
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id})
     .then(sauce => {
       if (sauce.userId != req.auth.userId) {
-        res.status(401).json({ message : 'Non autorisé !' });
+        res.status(403).json({ message : 'Non autorisé !' });
         return;
       }
 
@@ -71,6 +88,7 @@ exports.deleteSauce = (req, res, next) => {
     });
 };
 
+// Fonction pour le système de like et dislike
 exports.likeSauce = (req, res, next) => {
   let like = req.body.like
   let userId = req.body.userId

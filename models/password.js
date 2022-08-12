@@ -1,7 +1,7 @@
 const passwordValidator = require("password-validator");
 
+// Création du schéma de données passwordSchema avec password-validator
 const passwordSchema = new passwordValidator();
-
 passwordSchema
   .is().min(8)
   .is().max(20)
